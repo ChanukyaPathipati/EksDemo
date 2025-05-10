@@ -45,8 +45,17 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_ARM_64"
+    key_name = local.keypair_name  
 
+    iam_role_additional_policies = {
+      AmazonEKSWorkerNodePolicy             = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      AmazonEC2ContainerRegistryReadOnly   = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      AmazonEKS_CNI_Policy                 = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      CloudWatchAgentServerPolicy          = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+      SSMManagedInstanceCore    = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    }
   }
+
 
   eks_managed_node_groups = {
     one = {
@@ -69,6 +78,7 @@ module "eks" {
       desired_size = 1
     }
   }
+  depends_on = [ aws_key_pair.this ]
 }
 
 
@@ -82,3 +92,31 @@ resource "null_resource" "update_kubeconfig" {
     command = "aws eks update-kubeconfig --region ${var.region} --name ${module.eks.cluster_name}"
   }
 } 
+
+
+# ----------------- Ec2 Key-Pair creation ---------------------------
+resource "tls_private_key" "ec2_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "this" {
+  key_name   = local.keypair_name
+  public_key = tls_private_key.ec2_key.public_key_openssh
+}
+
+# ------------------ creating S3 bucket and uploading the keypair in s3 -----------
+
+resource "aws_s3_bucket" "key_bucket" {
+  bucket        = local.key_pair_s3_name
+  force_destroy = true
+}
+
+resource "aws_s3_object" "private_key_upload" {
+  bucket = aws_s3_bucket.key_bucket.bucket
+  key    = "${local.keypair_name}.pem"
+  content = tls_private_key.ec2_key.private_key_pem
+  content_type = "text/plain"
+
+  depends_on = [ aws_s3_bucket.key_bucket , aws_key_pair.this]
+}
