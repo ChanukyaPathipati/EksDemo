@@ -10,44 +10,6 @@ pipeline {
     }
 
     stages {
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                echo "Checking AWS CLI..."
-                if ! command -v aws &> /dev/null
-                then
-                    echo "Installing AWS CLI (ARM version)..."
-                    curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
-                    unzip -o awscliv2.zip
-                    ./aws/install
-                else
-                    echo "AWS CLI already installed."
-                fi
-
-                echo "Checking Docker..."
-                if ! command -v docker &> /dev/null
-                then
-                    echo "Installing Docker..."
-                    apt-get update
-                    apt-get install -y docker.io
-                else
-                    echo "Docker already installed."
-                fi
-
-                echo "Checking Terraform..."
-                if ! command -v terraform &> /dev/null
-                then
-                    echo "Installing Terraform..."
-                    apt-get update && apt-get install -y gnupg software-properties-common curl
-                    curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-                    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list
-                    apt-get update && apt-get install terraform -y
-                else
-                    echo "Terraform already installed."
-                fi
-                '''
-            }
-        }
 
         stage('Checkout') {
             steps {
