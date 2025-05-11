@@ -8,7 +8,7 @@
 replicaCount: 1
 
 image:
-  repository: 281695752858.dkr.ecr.us-east-1.amazonaws.com/my-app # Replace with your image
+  repository: 281695752858.dkr.ecr.us-east-1.amazonaws.com/jenkinstest # Replace with your image
   tag: latest # Replace with your tag
   pullPolicy: Always
   # platform: linux/arm64  # Explicitly specify platform
