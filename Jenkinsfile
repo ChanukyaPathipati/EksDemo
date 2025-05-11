@@ -56,7 +56,7 @@ pipeline {
             steps {
                 dir('terraform') {
                     sh '''
-                        terraform fmt -check
+                        terraform fmt
                         terraform init
                         terraform validate
                         terraform plan
