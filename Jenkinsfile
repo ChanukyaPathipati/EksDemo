@@ -17,6 +17,12 @@ pipeline {
             }
         }
 
+        stage('Dockerfile Lint') {
+            steps {
+                sh 'hadolint Dockerfile'
+            }
+        }
+
         stage('Login to ECR') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
@@ -34,21 +40,38 @@ pipeline {
             }
         }
 
+        stage('Security Scan (Trivy)') {
+            steps {
+                sh 'trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKER_IMAGE'
+            }
+        }
+
         stage('Push to ECR') {
             steps {
                 sh 'docker push $DOCKER_IMAGE'
             }
         }
 
-        stage('Terraform Init & Apply') {
+        stage('Terraform Validate') {
+            steps {
+                dir('terraform') {
+                    sh '''
+                        terraform fmt -check
+                        terraform init
+                        terraform validate
+                        terraform plan
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
                     dir('terraform') {
                         sh '''
-                        echo "Initializing and applying Terraform..."
-                        terraform init
-                        terraform plan -out=tfplan
-                        terraform apply -auto-approve tfplan
+                            echo "Applying Terraform changes..."
+                            terraform apply -auto-approve
                         '''
                     }
                 }
