@@ -1,6 +1,5 @@
 🚀 Automated AWS EKS Deployment with Terraform, Helm, and Jenkins CI/CD
-Your project is a highly automated, scalable, and secure AWS EKS deployment featuring:
-
+My project is a highly automated, scalable, and secure AWS EKS deployment featuring:
 ✅ Terraform for EKS cluster, VPC, IAM provisioning
 ✅ Custom Helm chart for flexible static web app deployment
 ✅ NGINX Ingress + AWS NLB for seamless app access
@@ -10,19 +9,18 @@ Your project is a highly automated, scalable, and secure AWS EKS deployment feat
 📐 Architecture Overview
 
 Infrastructure as Code (Terraform)
-
 EKS Cluster: Managed worker nodes, IAM roles, and security groups.
 VPC Networking: Includes subnets, NAT Gateway, and Internet Gateway for proper networking.
 S3 Bucket: Secure storage for SSH keypairs used by EKS worker nodes.
 NGINX Ingress Controller: Exposed via AWS NLB to route traffic to your services.
 Application Deployment (Helm)
-Custom Helm Chart: To deploy the static web app on the EKS cluster.
-Configurable values: Control replica count, resource limits, and ingress rules via Helm chart.
+Custom Helm Chart: Deploy the static web app on the EKS cluster.
+Configurable Values: Control replica count, resource limits, and ingress rules via the Helm chart.
 Code Source: Web app code pulled from GitHub.
 CI/CD Pipeline (Jenkins + GitHub Webhooks)
 Jenkinsfile: Defines build, test, and deploy stages.
 GitHub Webhook: Automatically triggers the pipeline on code push.
-Kubernetes Deployment: Using Helm to deploy the static web app onto EKS.
+Kubernetes Deployment: Use Helm to deploy the static web app onto EKS.
 
 🧪 Testing & Quality Assurance
 We’ve included the following tests to ensure the application and infrastructure are secure and functional:
@@ -30,6 +28,7 @@ We’ve included the following tests to ensure the application and infrastructur
 Dockerfile Linting:
 Test: Linting the Dockerfile using hadolint to ensure it adheres to best practices and avoids common issues.
 Stage: Dockerfile Lint
+
 Security Scanning:
 Test: Scans the Docker image using Trivy for high and critical security vulnerabilities.
 Stage: Security Scan (Trivy)
