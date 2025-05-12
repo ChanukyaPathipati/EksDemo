@@ -131,3 +131,6 @@ http://abcd1234.ngrok.io/github-webhook/
 Your Jenkinsfile should be in the root of the GitHub repository.
 
 
+output:
+
+![Alt text](<Screenshot 2025-05-12 at 1.03.14 AM.png>)
