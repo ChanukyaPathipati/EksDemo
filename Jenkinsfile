@@ -52,26 +52,15 @@ pipeline {
             }
         }
 
-        stage('Terraform Validate') {
-            steps {
-                dir('terraform') {
-                    sh '''
-                        terraform fmt
-                        terraform init
-                        terraform validate
-                        terraform plan
-                    '''
-                }
-            }
-        }
-
-        stage('Terraform Apply') {
+        stage('Terraform Init & Apply') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
                     dir('terraform') {
                         sh '''
-                            echo "Applying Terraform changes..."
-                            terraform apply -auto-approve
+                        echo "Initializing and applying Terraform..."
+                        terraform init
+                        terraform plan -out=tfplan
+                        terraform apply -auto-approve tfplan
                         '''
                     }
                 }
