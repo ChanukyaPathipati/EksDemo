@@ -48,6 +48,7 @@ The following should be installed in the jenkins server to run the pipeline
 
 hence I am using docker to run my jenkins server 
 1) use below command to run the container name jenkins with the jenkins image with root permisions.
+
 docker run -d \
   --name jenkins \
   -p 8080:8080 -p 50000:50000 \
@@ -56,7 +57,7 @@ docker run -d \
   -u root \
   jenkins/jenkins:lts
 
-2) to login to the container
+3) to login to the container
 
 docker exec -it <your_container_name> /bin/bash
 
